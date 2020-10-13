@@ -31,38 +31,6 @@ export const Login = styled.div`
       color: #f4ede8;
     }
 
-    input {
-      color: #f4ede8;
-      padding: 17px 52px;
-      border-radius: 10px;
-      background: #232129;
-      border: 0;
-
-      & + input {
-        margin-top: 8px;
-      }
-
-      &::placeholder {
-        color: #666360;
-      }
-    }
-
-    button {
-      width: 100%;
-      height: 56px;
-      border: 0;
-      color: #312e38;
-      font-weight: 500;
-      background: #ff9000;
-      border-radius: 10px;
-      margin-top: 24px;
-      transition: background-color 0.2s;
-
-      &:hover {
-        background: ${shade(0.2, '#ff9000')};
-      }
-    }
-
     a {
       text-decoration: none;
       color: #f4ede8;
