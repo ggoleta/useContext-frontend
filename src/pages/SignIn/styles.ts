@@ -19,7 +19,7 @@ export const Login = styled.div`
   justify-content: center;
 
   form {
-    max-width: 340px;
+    width: 340px;
 
     display: flex;
     flex-direction: column;
