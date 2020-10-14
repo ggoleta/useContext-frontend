@@ -10,7 +10,7 @@ import { Container, Login, Background } from './styles';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../hooks/AuthContext';
 
 interface FormData {
   email: string;
