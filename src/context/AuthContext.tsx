@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useState } from 'react';
+import React, { createContext, useCallback, useState, useContext } from 'react';
 import api from '../services/api';
 
 interface CredentialsData {
@@ -7,8 +7,9 @@ interface CredentialsData {
 }
 
 interface AuthContextData {
-  name: string;
+  user: object;
   signIn(credentials: CredentialsData): Promise<void>;
+  signOut(): void;
 }
 
 interface AuthState {
@@ -21,7 +22,7 @@ export const AuthContext = createContext<AuthContextData>(
 );
 
 export const AuthProvider: React.FC = ({ children }) => {
-  const [dataAuth, setDataAuth] = useState<AuthState>(() => {
+  const [data, setData] = useState<AuthState>(() => {
     const token = localStorage.getItem('@Context:token');
     const user = localStorage.getItem('@Context:user');
     if (token && user) {
@@ -37,20 +38,31 @@ export const AuthProvider: React.FC = ({ children }) => {
         password,
       });
 
-      console.log(response.data);
-      const { token, user } = response.data;
-      console.log(token);
+      const { token, user } = response.data.user;
       localStorage.setItem('@Context:token', token);
       localStorage.setItem('@Context:user', JSON.stringify(user));
-      setDataAuth({ token, user });
+      setData({ token, user });
     } catch (err) {
       console.log(err.message);
     }
   }, []);
 
+  const signOut = useCallback(() => {
+    localStorage.removeItem('@Context:token');
+    localStorage.removeItem('@Context:user');
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ name: 'Rogério', signIn }}>
+    <AuthContext.Provider value={{ user: data.user, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );
 };
+
+export function useAuth(): AuthContextData {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+}

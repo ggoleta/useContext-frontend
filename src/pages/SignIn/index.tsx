@@ -9,9 +9,8 @@ import logoImg from '../../assets/logo.svg';
 import { Container, Login, Background } from './styles';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
-import api from '../../services/api';
 
-import { AuthContext } from '../../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 
 interface FormData {
   email: string;
@@ -19,9 +18,8 @@ interface FormData {
 }
 
 const SignIn: React.FC = () => {
-  const { signIn } = useContext(AuthContext);
+  const { signIn } = useAuth();
   const formRef = useRef<FormHandles>(null);
-
   const handleSubmit = useCallback(
     async (data: FormData) => {
       try {
