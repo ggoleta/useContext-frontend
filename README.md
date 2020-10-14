@@ -10,4 +10,6 @@ In the project directory, you can run:
   <li>axios</li>
   <li>polished</li>
   <li>styled-components</li>
+  <li>unform</li>
+  <li>yup</li>
 </ul>
