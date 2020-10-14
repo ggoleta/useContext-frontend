@@ -5,6 +5,8 @@ export const Container = styled.div`
 
   span {
     background: #ff9000;
+    min-width: 150px;
+    text-align: center;
     padding: 8px;
     border-radius: 4px;
     font-size: 14px;

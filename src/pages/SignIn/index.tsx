@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useContext } from 'react';
 import { FiLogIn, FiMail, FiLock } from 'react-icons/fi';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
@@ -9,6 +9,9 @@ import logoImg from '../../assets/logo.svg';
 import { Container, Login, Background } from './styles';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
+import api from '../../services/api';
+
+import { AuthContext } from '../../context/AuthContext';
 
 interface FormData {
   email: string;
@@ -16,23 +19,31 @@ interface FormData {
 }
 
 const SignIn: React.FC = () => {
+  const { signIn } = useContext(AuthContext);
   const formRef = useRef<FormHandles>(null);
 
-  const handleSubmit = useCallback(async (data: FormData) => {
-    try {
-      formRef.current?.setErrors({});
-      const schema = Yup.object().shape({
-        email: Yup.string()
-          .required('E-mail obrigatório')
-          .email('Digite um email válido'),
-        password: Yup.string().required('Digite a senha.'),
-      });
-      await schema.validate(data, { abortEarly: false });
-    } catch (err) {
-      const errors = getValidationErrors(err);
-      formRef.current?.setErrors(errors);
-    }
-  }, []);
+  const handleSubmit = useCallback(
+    async (data: FormData) => {
+      try {
+        formRef.current?.setErrors({});
+        const schema = Yup.object().shape({
+          email: Yup.string()
+            .required('E-mail obrigatório')
+            .email('Digite um email válido'),
+          password: Yup.string().required('Senha obrigatória.'),
+        });
+        await schema.validate(data, { abortEarly: false });
+        signIn({
+          email: data.email,
+          password: data.password,
+        });
+      } catch (err) {
+        const errors = getValidationErrors(err);
+        formRef.current?.setErrors(errors);
+      }
+    },
+    [signIn],
+  );
 
   return (
     <Container>
