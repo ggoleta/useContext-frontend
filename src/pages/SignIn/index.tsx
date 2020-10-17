@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useContext } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { FiLogIn, FiMail, FiLock } from 'react-icons/fi';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
@@ -11,6 +11,7 @@ import Input from '../../components/Input';
 import Button from '../../components/Button';
 
 import { useAuth } from '../../hooks/AuthContext';
+import { useToast } from '../../hooks/toast';
 
 interface FormData {
   email: string;
@@ -18,6 +19,7 @@ interface FormData {
 }
 
 const SignIn: React.FC = () => {
+  const { addToast } = useToast();
   const { signIn } = useAuth();
   const formRef = useRef<FormHandles>(null);
   const handleSubmit = useCallback(
@@ -31,16 +33,26 @@ const SignIn: React.FC = () => {
           password: Yup.string().required('Senha obrigatória.'),
         });
         await schema.validate(data, { abortEarly: false });
-        signIn({
+
+        await signIn({
           email: data.email,
           password: data.password,
         });
       } catch (err) {
-        const errors = getValidationErrors(err);
-        formRef.current?.setErrors(errors);
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationErrors(err);
+          formRef.current?.setErrors(errors);
+          return;
+        }
+
+        addToast({
+          type: 'error',
+          title: 'Erro na autenticação',
+          description: 'Favor conferir suas credenciais.',
+        });
       }
     },
-    [signIn],
+    [signIn, addToast],
   );
 
   return (
